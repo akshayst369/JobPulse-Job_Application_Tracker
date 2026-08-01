@@ -1,6 +1,7 @@
 package com.akshay.jobpulse.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDate;
 
@@ -28,6 +29,7 @@ public class Round {
     @Column(columnDefinition = "TEXT")
     private String notes;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "job_id", nullable = false)
     private JobApplication jobApplication;

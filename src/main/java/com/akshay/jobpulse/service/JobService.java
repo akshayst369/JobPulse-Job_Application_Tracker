@@ -24,4 +24,22 @@ public class JobService {
         return jobRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Job not found with id: " + id));
     }
+
+    public JobApplication updateJob(Long id, JobApplication updatedJob) {
+        JobApplication existing = getJobById(id);
+        existing.setCompanyName(updatedJob.getCompanyName());
+        existing.setRole(updatedJob.getRole());
+        existing.setLocation(updatedJob.getLocation());
+        existing.setJobLink(updatedJob.getJobLink());
+        existing.setPriority(updatedJob.getPriority());
+        existing.setAppliedDate(updatedJob.getAppliedDate());
+        existing.setNotes(updatedJob.getNotes());
+        return jobRepository.save(existing);
+    }
+
+    public void deleteJob(Long id) {
+        JobApplication job = getJobById(id);
+        job.setDeleted(true);
+        jobRepository.save(job);
+    }
 }

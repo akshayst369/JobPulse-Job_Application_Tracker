@@ -17,8 +17,7 @@ public class JobController {
 
     @PostMapping
     public ResponseEntity<JobApplication> createJob(@RequestBody JobApplication job) {
-        JobApplication created = jobService.createJob(job);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+        return new ResponseEntity<>(jobService.createJob(job), HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -29,5 +28,16 @@ public class JobController {
     @GetMapping("/{id}")
     public ResponseEntity<JobApplication> getJobById(@PathVariable Long id) {
         return ResponseEntity.ok(jobService.getJobById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<JobApplication> updateJob(@PathVariable Long id, @RequestBody JobApplication job) {
+        return ResponseEntity.ok(jobService.updateJob(id, job));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteJob(@PathVariable Long id) {
+        jobService.deleteJob(id);
+        return ResponseEntity.ok("Job deleted successfully");
     }
 }
