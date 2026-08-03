@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobPulse</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        #message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>JobPulse 🚀</h1>
+    <h2>Add Job Application</h2>
+
+    <div class="form-group">
+        <label>Company Name *</label>
+        <input type="text" id="companyName" placeholder="e.g. Zoho">
+    </div>
+
+    <div class="form-group">
+        <label>Role *</label>
+        <input type="text" id="role" placeholder="e.g. Software Engineer">
+    </div>
+
+    <div class="form-group">
+        <label>Location</label>
+        <input type="text" id="location" placeholder="e.g. Chennai">
+    </div>
+
+    <div class="form-group">
+        <label>Job Link</label>
+        <input type="text" id="jobLink" placeholder="https://...">
+    </div>
+
+    <div class="form-group">
+        <label>Priority</label>
+        <select id="priority">
+            <option value="HIGH">High</option>
+            <option value="MEDIUM" selected>Medium</option>
+            <option value="LOW">Low</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Applied Date *</label>
+        <input type="date" id="appliedDate">
+    </div>
+
+    <div class="form-group">
+        <label>Notes</label>
+        <textarea id="notes" rows="3" placeholder="Any notes..."></textarea>
+    </div>
+
+    <button onclick="submitJob()">Add Application</button>
+
+    <div id="message"></div>
+
+    <script>
+        async function submitJob() {
+            const job = {
+                companyName: document.getElementById('companyName').value,
+                role: document.getElementById('role').value,
+                location: document.getElementById('location').value,
+                jobLink: document.getElementById('jobLink').value,
+                priority: document.getElementById('priority').value,
+                appliedDate: document.getElementById('appliedDate').value,
+                notes: document.getElementById('notes').value
+            };
+
+            if (!job.companyName || !job.role || !job.appliedDate) {
+                showMessage('Please fill in Company Name, Role and Applied Date.', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8080/api/jobs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(job)
+                });
+
+                if (response.ok) {
+                    showMessage('Job application added successfully!', 'success');
+                    clearForm();
+                } else {
+                    showMessage('Something went wrong. Try again.', 'error');
+                }
+            } catch (error) {
+                showMessage('Cannot connect to server. Make sure the app is running.', 'error');
+            }
+        }
+
+        function showMessage(msg, type) {
+            const el = document.getElementById('message');
+            el.textContent = msg;
+            el.className = type;
+            el.style.display = 'block';
+        }
+
+        function clearForm() {
+            document.getElementById('companyName').value = '';
+            document.getElementById('role').value = '';
+            document.getElementById('location').value = '';
+            document.getElementById('jobLink').value = '';
+            document.getElementById('appliedDate').value = '';
+            document.getElementById('notes').value = '';
+        }
+    </script>
+</body>
+</html>
