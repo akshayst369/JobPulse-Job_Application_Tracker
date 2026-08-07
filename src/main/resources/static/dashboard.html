@@ -95,7 +95,7 @@
         <a href="/index.html">+ Add Job</a>
         <a href="/dashboard.html">Dashboard</a>
     </nav>
-    <h1>JobPulse 🚀</h1>
+    <h1>JobPulse</h1>
     <p class="subtitle">Track your placement journey</p>
 
     <div class="stats">
@@ -255,7 +255,7 @@
                     <option value="CLEARED" ${round.status === 'CLEARED' ? 'selected' : ''}>CLEARED</option>
                     <option value="FAILED" ${round.status === 'FAILED' ? 'selected' : ''}>FAILED</option>
                 </select>
-                <button class="btn-delete" onclick="deleteRound(${round.id})">Delete</button>
+                <button class="btn-delete" onclick="deleteRound(${jobId}, ${round.id})">Delete</button>
             </div>
         `).join('');
         }
@@ -323,9 +323,9 @@
                 alert('Cannot connect to server.');
             }
         }
-        async function deleteRound(roundId) {
+        async function deleteRound(jobId, roundId) {
             if (!confirm('Delete this round?')) return;
-            await fetch(`/api/jobs/${selectedJobId}/rounds/${roundId}`, {
+            await fetch(`/api/jobs/${jobId}/rounds/${roundId}`, {
                 method: 'DELETE'
             });
             await loadRounds(selectedJobId);
