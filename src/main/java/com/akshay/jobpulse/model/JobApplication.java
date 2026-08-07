@@ -49,7 +49,7 @@ public class JobApplication {
 
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "jobApplication", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "jobApplication", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Round> rounds = new ArrayList<>();
 
     @PrePersist
