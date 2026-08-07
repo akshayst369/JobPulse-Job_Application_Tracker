@@ -183,7 +183,7 @@
 
         async function loadJobs() {
             try {
-                const response = await fetch('http://localhost:8080/api/jobs');
+                const response = await fetch('/api/jobs');
                 allJobs = await response.json();
                 updateStats(allJobs);
                 renderTable(allJobs);
@@ -235,7 +235,7 @@
         }
 
         async function loadRounds(jobId) {
-            const response = await fetch(`http://localhost:8080/api/jobs/${jobId}/rounds`);
+            const response = await fetch('/api/jobs');
             const rounds = await response.json();
             const container = document.getElementById('roundsList');
 
@@ -245,22 +245,23 @@
             }
 
             container.innerHTML = rounds.map(round => `
-                <div class="round-item">
-                    <div class="round-name">Round ${round.roundOrder}: ${round.roundName}</div>
-                    <div class="round-date">${round.roundDate || 'No date'}</div>
-                    <div class="round-notes">${round.notes || '-'}</div>
-                    <span class="badge badge-${round.status.toLowerCase()}">${round.status}</span>
-                    <select class="round-status-select" onchange="updateRoundStatus(${round.id}, this.value)">
-                        <option value="PENDING" ${round.status === 'PENDING' ? 'selected' : ''}>PENDING</option>
-                        <option value="CLEARED" ${round.status === 'CLEARED' ? 'selected' : ''}>CLEARED</option>
-                        <option value="FAILED" ${round.status === 'FAILED' ? 'selected' : ''}>FAILED</option>
-                    </select>
-                </div>
-            `).join('');
+            <div class="round-item">
+                <div class="round-name">Round ${round.roundOrder}: ${round.roundName}</div>
+                <div class="round-date">${round.roundDate || 'No date'}</div>
+                <div class="round-notes">${round.notes || '-'}</div>
+                <span class="badge badge-${round.status.toLowerCase()}">${round.status}</span>
+                <select class="round-status-select" onchange="updateRoundStatus(${round.id}, this.value)">
+                    <option value="PENDING" ${round.status === 'PENDING' ? 'selected' : ''}>PENDING</option>
+                    <option value="CLEARED" ${round.status === 'CLEARED' ? 'selected' : ''}>CLEARED</option>
+                    <option value="FAILED" ${round.status === 'FAILED' ? 'selected' : ''}>FAILED</option>
+                </select>
+                <button class="btn-delete" onclick="deleteRound(${round.id})">Delete</button>
+            </div>
+        `).join('');
         }
 
         async function updateRoundStatus(roundId, newStatus) {
-            await fetch(`http://localhost:8080/api/jobs/${selectedJobId}/rounds/${roundId}/status`, {
+            await fetch('/api/jobs', {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: newStatus })
@@ -277,7 +278,7 @@
 
             if (!name) { alert('Round name is required.'); return; }
 
-            await fetch(`http://localhost:8080/api/jobs/${selectedJobId}/rounds`, {
+            await fetch('/api/jobs', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ roundName: name, roundOrder: parseInt(order), roundDate: date || null, notes: notes })
@@ -313,7 +314,7 @@
         async function deleteJob(id) {
             if (!confirm('Delete this application?')) return;
             try {
-                const response = await fetch(`http://localhost:8080/api/jobs/${id}`, { method: 'DELETE' });
+                const response = await fetch('/api/jobs', { method: 'DELETE' });
                 if (response.ok) {
                     closeRoundsPanel();
                     loadJobs();
@@ -321,6 +322,14 @@
             } catch (error) {
                 alert('Cannot connect to server.');
             }
+        }
+        async function deleteRound(roundId) {
+            if (!confirm('Delete this round?')) return;
+            await fetch('/api/jobs', {
+                method: 'DELETE'
+            });
+            await loadRounds(selectedJobId);
+            await loadJobs();
         }
 
         loadJobs();

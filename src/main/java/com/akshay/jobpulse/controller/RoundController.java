@@ -35,4 +35,12 @@ public class RoundController {
         RoundStatus status = RoundStatus.valueOf(body.get("status"));
         return ResponseEntity.ok(roundService.updateRoundStatus(jobId, roundId, status));
     }
+    @DeleteMapping("/{roundId}")
+    public ResponseEntity<String> deleteRound(
+            @PathVariable Long jobId,
+            @PathVariable Long roundId) {
+        roundService.deleteRound(jobId, roundId);
+        return ResponseEntity.ok("Round deleted successfully");
+    }
+    
 }
