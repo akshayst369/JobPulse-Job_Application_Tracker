@@ -314,7 +314,7 @@
         async function deleteJob(id) {
             if (!confirm('Delete this application?')) return;
             try {
-                const response = await fetch('/api/jobs', { method: 'DELETE' });
+            	const response = await fetch(`/api/jobs/${id}`, { method: 'DELETE' });
                 if (response.ok) {
                     closeRoundsPanel();
                     loadJobs();
