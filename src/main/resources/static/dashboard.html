@@ -246,7 +246,7 @@
 
             container.innerHTML = rounds.map(round => `
             <div class="round-item">
-            <div class="round-name">Round ${round.roundOrder || round.round_order}: ${round.roundName || round.round_name}</div>
+            <div class="round-name">Round ${round.roundOrder}: ${round.roundName}</div>
                 <div class="round-date">${round.roundDate || 'No date'}</div>
                 <div class="round-notes">${round.notes || '-'}</div>
                 <span class="badge badge-${round.status.toLowerCase()}">${round.status}</span>
