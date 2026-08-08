@@ -242,29 +242,29 @@
             console.log('Container found:', container, 'innerHTML length before:', container.innerHTML.length);
             
             container.style.display = 'none';
-            container.style.display = 'none';
 
             if (rounds.length === 0) {
                 container.innerHTML = '<p class="no-rounds">No rounds added yet. Add the first round below.</p>';
-                container.style.display = 'block';
+                setTimeout(() => { container.style.display = 'block'; }, 50);
                 return;
             }
 
             container.innerHTML = rounds.map(round => `
-            <div class="round-item">
-            <div class="round-name">Round ${round.roundOrder}: ${round.roundName}</div>
-                <div class="round-date">${round.roundDate || 'No date'}</div>
-                <div class="round-notes">${round.notes || '-'}</div>
-                <span class="badge badge-${round.status.toLowerCase()}">${round.status}</span>
-                <select class="round-status-select" onchange="updateRoundStatus(${round.id}, this.value)">
-                    <option value="PENDING" ${round.status === 'PENDING' ? 'selected' : ''}>PENDING</option>
-                    <option value="CLEARED" ${round.status === 'CLEARED' ? 'selected' : ''}>CLEARED</option>
-                    <option value="FAILED" ${round.status === 'FAILED' ? 'selected' : ''}>FAILED</option>
-                </select>
-                <button class="btn-delete" onclick="deleteRound(${jobId}, ${round.id})">Delete</button>
-            </div>
-        `).join('');
-        container.style.display = 'block';
+                <div class="round-item">
+                <div class="round-name">Round ${round.roundOrder}: ${round.roundName}</div>
+                    <div class="round-date">${round.roundDate || 'No date'}</div>
+                    <div class="round-notes">${round.notes || '-'}</div>
+                    <span class="badge badge-${round.status.toLowerCase()}">${round.status}</span>
+                    <select class="round-status-select" onchange="updateRoundStatus(${round.id}, this.value)">
+                        <option value="PENDING" ${round.status === 'PENDING' ? 'selected' : ''}>PENDING</option>
+                        <option value="CLEARED" ${round.status === 'CLEARED' ? 'selected' : ''}>CLEARED</option>
+                        <option value="FAILED" ${round.status === 'FAILED' ? 'selected' : ''}>FAILED</option>
+                    </select>
+                    <button class="btn-delete" onclick="deleteRound(${jobId}, ${round.id})">Delete</button>
+                </div>
+            `).join('');
+
+            setTimeout(() => { container.style.display = 'block'; }, 50);
         container.scrollTop = 0;
         }
 
