@@ -237,12 +237,8 @@
         async function loadRounds(jobId) {
             const response = await fetch(`/api/jobs/${jobId}/rounds`);
             const rounds = await response.json();
+            console.log('Rounds after delete:', rounds);
             const container = document.getElementById('roundsList');
-
-            if (rounds.length === 0) {
-                container.innerHTML = '<p class="no-rounds">No rounds added yet. Add the first round below.</p>';
-                return;
-            }
 
             container.innerHTML = rounds.map(round => `
             <div class="round-item">
