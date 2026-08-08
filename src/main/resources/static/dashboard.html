@@ -241,7 +241,15 @@
             const container = document.getElementById('roundsList');
             console.log('Container found:', container, 'innerHTML length before:', container.innerHTML.length);
             
-            container.innerHTML = '';
+            container.style.display = 'none';
+            container.style.display = 'none';
+
+            if (rounds.length === 0) {
+                container.innerHTML = '<p class="no-rounds">No rounds added yet. Add the first round below.</p>';
+                container.style.display = 'block';
+                return;
+            }
+
             container.innerHTML = rounds.map(round => `
             <div class="round-item">
             <div class="round-name">Round ${round.roundOrder}: ${round.roundName}</div>
@@ -256,6 +264,7 @@
                 <button class="btn-delete" onclick="deleteRound(${jobId}, ${round.id})">Delete</button>
             </div>
         `).join('');
+        container.style.display = 'block';
         container.scrollTop = 0;
         }
 
