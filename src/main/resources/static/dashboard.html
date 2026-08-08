@@ -239,7 +239,8 @@
             const rounds = await response.json();
             console.log('Rounds after delete:', rounds);
             const container = document.getElementById('roundsList');
-
+            
+            container.innerHTML = '';
             container.innerHTML = rounds.map(round => `
             <div class="round-item">
             <div class="round-name">Round ${round.roundOrder}: ${round.roundName}</div>
@@ -254,6 +255,7 @@
                 <button class="btn-delete" onclick="deleteRound(${jobId}, ${round.id})">Delete</button>
             </div>
         `).join('');
+        container.scrollTop = 0;
         }
 
         async function updateRoundStatus(roundId, newStatus) {
