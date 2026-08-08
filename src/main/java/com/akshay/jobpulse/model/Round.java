@@ -1,6 +1,7 @@
 package com.akshay.jobpulse.model;
 
 import jakarta.persistence.*;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDate;
