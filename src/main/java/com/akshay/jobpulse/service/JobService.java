@@ -1,5 +1,7 @@
 package com.akshay.jobpulse.service;
 
+
+import org.springframework.transaction.annotation.Transactional;
 import com.akshay.jobpulse.model.JobApplication;
 import com.akshay.jobpulse.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,7 @@ public class JobService {
         return jobRepository.save(existing);
     }
 
+    @Transactional
     public void deleteJob(Long id) {
         JobApplication job = getJobById(id);
         job.setDeleted(true);

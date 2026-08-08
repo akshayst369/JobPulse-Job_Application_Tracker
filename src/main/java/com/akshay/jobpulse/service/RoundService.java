@@ -1,5 +1,6 @@
 package com.akshay.jobpulse.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import com.akshay.jobpulse.model.Round;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,7 @@ public class RoundService {
         return roundRepository.findByJobApplicationId(jobId);
     }
 
+    @Transactional
     public Round updateRoundStatus(Long jobId, Long roundId, RoundStatus newStatus) {
         Round round = roundRepository.findById(roundId)
                 .orElseThrow(() -> new RuntimeException("Round not found with id: " + roundId));
