@@ -65,11 +65,6 @@ public class RoundService {
     public void deleteRound(Long jobId, Long roundId) {
         Round round = roundRepository.findById(roundId)
                 .orElseThrow(() -> new RuntimeException("Round not found with id: " + roundId));
-
-        if (!round.getJobApplication().getId().equals(jobId)) {
-            throw new RuntimeException("Round does not belong to this job");
-        }
-
-        roundRepository.delete(round);
+        roundRepository.deleteById(roundId);
     }
 }
