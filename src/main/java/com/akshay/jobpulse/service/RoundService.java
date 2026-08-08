@@ -2,7 +2,6 @@ package com.akshay.jobpulse.service;
 
 import org.springframework.transaction.annotation.Transactional;
 import com.akshay.jobpulse.model.Round;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.akshay.jobpulse.model.RoundStatus;
 import com.akshay.jobpulse.model.JobApplication;
@@ -65,10 +64,36 @@ public class RoundService {
         jobRepository.save(job);
         return savedRound;
     }
+
     @Transactional
     public void deleteRound(Long jobId, Long roundId) {
+        JobApplication job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new RuntimeException("Job not found with id: " + jobId));
+
         Round round = roundRepository.findById(roundId)
                 .orElseThrow(() -> new RuntimeException("Round not found with id: " + roundId));
-        roundRepository.deleteById(roundId);
+
+        if (!round.getJobApplication().getId().equals(jobId)) {
+            throw new RuntimeException("Round does not belong to this job");
+        }
+
+        job.getRounds().remove(round);
+        roundRepository.delete(round);
+
+        List<Round> remainingRounds = job.getRounds();
+        boolean anyFailed = remainingRounds.stream()
+                .anyMatch(r -> r.getStatus() == RoundStatus.FAILED);
+        boolean allCleared = !remainingRounds.isEmpty() && remainingRounds.stream()
+                .allMatch(r -> r.getStatus() == RoundStatus.CLEARED);
+
+        if (anyFailed) {
+            job.setStatus(JobStatus.REJECTED);
+        } else if (allCleared) {
+            job.setStatus(JobStatus.OFFER);
+        } else {
+            job.setStatus(JobStatus.ACTIVE);
+        }
+
+        jobRepository.save(job);
     }
 }
