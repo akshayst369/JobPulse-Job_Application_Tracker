@@ -235,7 +235,7 @@
         }
 
         async function loadRounds(jobId) {
-            const response = await fetch(`/api/jobs/${jobId}/rounds`);
+        	const response = await fetch(`/api/jobs/${jobId}/rounds`, { cache: 'no-store' });
             const rounds = await response.json();
             console.log('Rounds after delete:', rounds);
             const container = document.getElementById('roundsList');
