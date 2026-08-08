@@ -1,6 +1,8 @@
 package com.akshay.jobpulse.service;
 
 import com.akshay.jobpulse.model.Round;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.akshay.jobpulse.model.RoundStatus;
 import com.akshay.jobpulse.model.JobApplication;
 import com.akshay.jobpulse.model.JobStatus;
@@ -61,7 +63,7 @@ public class RoundService {
         jobRepository.save(job);
         return savedRound;
     }
-    
+    @Transactional
     public void deleteRound(Long jobId, Long roundId) {
         Round round = roundRepository.findById(roundId)
                 .orElseThrow(() -> new RuntimeException("Round not found with id: " + roundId));
