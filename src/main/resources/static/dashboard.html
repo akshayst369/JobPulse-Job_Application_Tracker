@@ -239,6 +239,7 @@
             const rounds = await response.json();
             console.log('Rounds after delete:', rounds);
             const container = document.getElementById('roundsList');
+            console.log('Container found:', container, 'innerHTML length before:', container.innerHTML.length);
             
             container.innerHTML = '';
             container.innerHTML = rounds.map(round => `
