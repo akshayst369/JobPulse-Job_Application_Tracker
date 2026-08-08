@@ -324,13 +324,12 @@
             }
         }
         async function deleteRound(jobId, roundId) {
-            console.log('deleteRound called with jobId:', jobId, 'roundId:', roundId);
             if (!confirm('Delete this round?')) return;
             const res = await fetch(`/api/jobs/${jobId}/rounds/${roundId}`, {
                 method: 'DELETE'
             });
             console.log('Delete response status:', res.status);
-            await loadRounds(selectedJobId);
+            await loadRounds(jobId);
             await loadJobs();
         }
 
