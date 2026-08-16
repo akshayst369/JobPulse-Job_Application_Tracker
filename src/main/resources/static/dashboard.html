@@ -336,11 +336,10 @@
             const res = await fetch(`/api/jobs/${jobId}/rounds/${roundId}`, {
                 method: 'DELETE'
             });
-            console.log('Delete response status:', res.status);
             await loadRounds(jobId);
             await loadJobs();
         }
-
+        
         loadJobs();
     </script>
 </body>

@@ -129,11 +129,12 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(job)
                 });
-
                 if (response.ok) {
-                    showMessage('Job application added successfully!', 'success');
+                    showMessage('Job application added successfully! Redirecting...', 'success');
                     clearForm();
-                } else {
+                    setTimeout(() => { window.location.href = '/dashboard.html'; }, 1500);
+                }
+                else {
                     showMessage('Something went wrong. Try again.', 'error');
                 }
             } catch (error) {
