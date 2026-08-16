@@ -1,6 +1,6 @@
 package com.akshay.jobpulse.service;
 
-
+import com.akshay.jobpulse.exception.ResourceNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import com.akshay.jobpulse.model.JobApplication;
 import com.akshay.jobpulse.repository.JobRepository;
@@ -24,7 +24,7 @@ public class JobService {
 
     public JobApplication getJobById(Long id) {
         return jobRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Job not found with id: " + id));
+        		.orElseThrow(() -> new ResourceNotFoundException("Job not found with id: " + id));
     }
 
     public JobApplication updateJob(Long id, JobApplication updatedJob) {

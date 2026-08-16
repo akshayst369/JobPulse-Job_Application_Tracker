@@ -1,5 +1,6 @@
 package com.akshay.jobpulse.service;
 
+import com.akshay.jobpulse.exception.ResourceNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import com.akshay.jobpulse.model.Round;
 
@@ -22,8 +23,8 @@ public class RoundService {
     private JobRepository jobRepository;
 
     public Round addRound(Long jobId, Round round) {
-        JobApplication job = jobRepository.findById(jobId)
-                .orElseThrow(() -> new RuntimeException("Job not found with id: " + jobId));
+    	JobApplication job = jobRepository.findById(jobId)
+    	        .orElseThrow(() -> new ResourceNotFoundException("Job not found with id: " + jobId));
         round.setJobApplication(job);
         return roundRepository.save(round);
     }
@@ -34,8 +35,8 @@ public class RoundService {
 
     @Transactional
     public Round updateRoundStatus(Long jobId, Long roundId, RoundStatus newStatus) {
-        Round round = roundRepository.findById(roundId)
-                .orElseThrow(() -> new RuntimeException("Round not found with id: " + roundId));
+    	Round round = roundRepository.findById(roundId)
+    	        .orElseThrow(() -> new ResourceNotFoundException("Round not found with id: " + roundId));
 
         if (!round.getJobApplication().getId().equals(jobId)) {
             throw new RuntimeException("Round does not belong to this job");
@@ -67,11 +68,11 @@ public class RoundService {
 
     @Transactional
     public void deleteRound(Long jobId, Long roundId) {
-        JobApplication job = jobRepository.findById(jobId)
-                .orElseThrow(() -> new RuntimeException("Job not found with id: " + jobId));
+    	JobApplication job = jobRepository.findById(jobId)
+    	        .orElseThrow(() -> new ResourceNotFoundException("Job not found with id: " + jobId));
 
-        Round round = roundRepository.findById(roundId)
-                .orElseThrow(() -> new RuntimeException("Round not found with id: " + roundId));
+    	Round round = roundRepository.findById(roundId)
+    	        .orElseThrow(() -> new ResourceNotFoundException("Round not found with id: " + roundId));
 
         if (!round.getJobApplication().getId().equals(jobId)) {
             throw new RuntimeException("Round does not belong to this job");
