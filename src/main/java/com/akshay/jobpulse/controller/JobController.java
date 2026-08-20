@@ -1,5 +1,6 @@
 package com.akshay.jobpulse.controller;
 
+import com.akshay.jobpulse.dto.PaginatedResponse;
 import com.akshay.jobpulse.model.JobApplication;
 import com.akshay.jobpulse.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,14 @@ public class JobController {
     @GetMapping
     public ResponseEntity<List<JobApplication>> getAllJobs() {
         return ResponseEntity.ok(jobService.getAllJobs());
+    }
+
+    @GetMapping("/paginated")
+    public ResponseEntity<PaginatedResponse<JobApplication>> getJobsPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        PaginatedResponse<JobApplication> response = jobService.getJobsPaginated(page, size);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")

@@ -19,6 +19,7 @@
         .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
         .btn-primary { background: #4CAF50; color: white; }
         .btn-secondary { background: #2196F3; color: white; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
         table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
         th { background: #333; color: white; padding: 12px 15px; text-align: left; font-size: 13px; }
         td { padding: 12px 15px; border-bottom: 1px solid #eee; font-size: 14px; }
@@ -37,6 +38,10 @@
         .empty { text-align: center; padding: 40px; color: #888; }
         nav { margin-bottom: 20px; }
         nav a { margin-right: 15px; text-decoration: none; color: #2196F3; font-weight: bold; }
+
+        /* Pagination */
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; }
+        .pagination span { font-size: 14px; color: #555; }
 
         /* Rounds Panel */
         .rounds-panel {
@@ -142,6 +147,13 @@
         </tbody>
     </table>
 
+    <!-- Pagination Controls -->
+    <div class="pagination">
+        <button class="btn btn-secondary" id="prevBtn" onclick="changePage(-1)" disabled>← Prev</button>
+        <span id="pageInfo">Page 1</span>
+        <button class="btn btn-secondary" id="nextBtn" onclick="changePage(1)" disabled>Next →</button>
+    </div>
+
     <!-- Rounds Panel -->
     <div class="rounds-panel" id="roundsPanel">
         <button class="close-btn" onclick="closeRoundsPanel()">✕</button>
@@ -180,24 +192,43 @@
     <script>
         let allJobs = [];
         let selectedJobId = null;
+        let currentPage = 0;
+        const pageSize = 10;
+        let totalPages = 1;
 
         async function loadJobs() {
             try {
-                const response = await fetch('/api/jobs');
-                allJobs = await response.json();
-                updateStats(allJobs);
+                const response = await fetch(`/api/jobs/paginated?page=${currentPage}&size=${pageSize}`);
+                const data = await response.json();
+
+                allJobs = data.content;
+                totalPages = data.totalPages;
+
+                updateStats(data.totalElements);
                 renderTable(allJobs);
+                updatePagination(data.hasPrevious, data.hasNext);
             } catch (error) {
                 document.getElementById('jobTableBody').innerHTML =
                     '<tr><td colspan="9" class="empty">Cannot connect to server.</td></tr>';
             }
         }
 
-        function updateStats(jobs) {
-            document.getElementById('totalCount').textContent = jobs.length;
-            document.getElementById('activeCount').textContent = jobs.filter(j => j.status === 'ACTIVE').length;
-            document.getElementById('offerCount').textContent = jobs.filter(j => j.status === 'OFFER').length;
-            document.getElementById('rejectedCount').textContent = jobs.filter(j => j.status === 'REJECTED').length;
+        function updateStats(total) {
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('activeCount').textContent = allJobs.filter(j => j.status === 'ACTIVE').length;
+            document.getElementById('offerCount').textContent = allJobs.filter(j => j.status === 'OFFER').length;
+            document.getElementById('rejectedCount').textContent = allJobs.filter(j => j.status === 'REJECTED').length;
+        }
+
+        function updatePagination(hasPrevious, hasNext) {
+            document.getElementById('prevBtn').disabled = !hasPrevious;
+            document.getElementById('nextBtn').disabled = !hasNext;
+            document.getElementById('pageInfo').textContent = `Page ${currentPage + 1} of ${totalPages}`;
+        }
+
+        function changePage(direction) {
+            currentPage += direction;
+            loadJobs();
         }
 
         function renderTable(jobs) {
@@ -208,7 +239,7 @@
             }
             tbody.innerHTML = jobs.map((job, index) => `
                 <tr onclick="openRoundsPanel(${job.id}, '${job.companyName} - ${job.role}')">
-                    <td>${index + 1}</td>
+                    <td>${currentPage * pageSize + index + 1}</td>
                     <td><strong>${job.companyName}</strong></td>
                     <td>${job.role}</td>
                     <td>${job.location || '-'}</td>
@@ -235,12 +266,9 @@
         }
 
         async function loadRounds(jobId) {
-        	const response = await fetch(`/api/jobs/${jobId}/rounds`, { cache: 'no-store' });
+            const response = await fetch(`/api/jobs/${jobId}/rounds`, { cache: 'no-store' });
             const rounds = await response.json();
-            
             const container = document.getElementById('roundsList');
-            
-            
             container.style.display = 'none';
 
             if (rounds.length === 0) {
@@ -251,7 +279,7 @@
 
             container.innerHTML = rounds.map(round => `
                 <div class="round-item">
-                <div class="round-name">Round ${round.roundOrder}: ${round.roundName}</div>
+                    <div class="round-name">Round ${round.roundOrder}: ${round.roundName}</div>
                     <div class="round-date">${round.roundDate || 'No date'}</div>
                     <div class="round-notes">${round.notes || '-'}</div>
                     <span class="badge badge-${round.status.toLowerCase()}">${round.status}</span>
@@ -265,11 +293,11 @@
             `).join('');
 
             setTimeout(() => { container.style.display = 'block'; }, 50);
-        container.scrollTop = 0;
+            container.scrollTop = 0;
         }
 
         async function updateRoundStatus(roundId, newStatus) {
-        	await fetch(`/api/jobs/${selectedJobId}/rounds/${roundId}/status`, {
+            await fetch(`/api/jobs/${selectedJobId}/rounds/${roundId}/status`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: newStatus })
@@ -308,7 +336,6 @@
                 const matchPriority = priority === '' || job.priority === priority;
                 return matchSearch && matchStatus && matchPriority;
             });
-            updateStats(filtered);
             renderTable(filtered);
         }
 
@@ -316,13 +343,14 @@
             document.getElementById('searchCompany').value = '';
             document.getElementById('filterStatus').value = '';
             document.getElementById('filterPriority').value = '';
+            currentPage = 0;
             loadJobs();
         }
 
         async function deleteJob(id) {
             if (!confirm('Delete this application?')) return;
             try {
-            	const response = await fetch(`/api/jobs/${id}`, { method: 'DELETE' });
+                const response = await fetch(`/api/jobs/${id}`, { method: 'DELETE' });
                 if (response.ok) {
                     closeRoundsPanel();
                     loadJobs();
@@ -331,15 +359,14 @@
                 alert('Cannot connect to server.');
             }
         }
+
         async function deleteRound(jobId, roundId) {
             if (!confirm('Delete this round?')) return;
-            const res = await fetch(`/api/jobs/${jobId}/rounds/${roundId}`, {
-                method: 'DELETE'
-            });
+            await fetch(`/api/jobs/${jobId}/rounds/${roundId}`, { method: 'DELETE' });
             await loadRounds(jobId);
             await loadJobs();
         }
-        
+
         loadJobs();
     </script>
 </body>

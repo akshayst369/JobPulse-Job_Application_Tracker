@@ -1,5 +1,6 @@
 package com.akshay.jobpulse.service;
 
+import com.akshay.jobpulse.dto.PaginatedResponse;
 import com.akshay.jobpulse.exception.ResourceNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import com.akshay.jobpulse.model.JobApplication;
@@ -28,7 +29,7 @@ public class JobService {
 
     public JobApplication getJobById(Long id) {
         return jobRepository.findById(id)
-        		.orElseThrow(() -> new ResourceNotFoundException("Job not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Job not found with id: " + id));
     }
 
     public JobApplication updateJob(Long id, JobApplication updatedJob) {
@@ -49,9 +50,10 @@ public class JobService {
         job.setDeleted(true);
         jobRepository.save(job);
     }
-    
-    public Page<JobApplication> getJobsPaginated(int page, int size) {
+
+    public PaginatedResponse<JobApplication> getJobsPaginated(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return jobRepository.findByIsDeletedFalse(pageable);
+        Page<JobApplication> pageResult = jobRepository.findByIsDeletedFalse(pageable);
+        return new PaginatedResponse<>(pageResult);
     }
 }
