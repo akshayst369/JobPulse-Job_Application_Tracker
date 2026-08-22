@@ -10,7 +10,7 @@ JobPulse helps you organize your job hunt. It keeps track of the roles you've ap
 
 | Dashboard View | Application Details |
 | :---: | :---: |
-| <img src="https://via.placeholder.com/600x400?text=Dashboard+Screenshot" alt="Dashboard" width="400"/> | <img src="https://via.placeholder.com/600x400?text=App+Details+Screenshot" alt="Application Details" width="400"/> |
+| <img src="https://github.com/user-attachments/assets/84afc3d2-f19c-4a97-88e4-de8f12f01f24" alt="Dashboard" width="400"/> | <img src="https://github.com/user-attachments/assets/2e72b5fa-503b-44e2-a4aa-4584a4857ef6" alt="Application Details" width="400"/> |
 
 ## 🚀 Tech Stack
 
