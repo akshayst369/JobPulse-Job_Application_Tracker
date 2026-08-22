@@ -1,35 +1,66 @@
-# JobPulse 🚀
+# JobPulse 📊
 
-**Live:** https://jobpulse-jobapplicationtracker-production.up.railway.app
+> A clean, straightforward Spring Boot application to track job applications and interview rounds.
 
-A Job Application Tracker built with Spring Boot and MySQL.
+JobPulse helps you organize your job hunt. It keeps track of the roles you've applied for, the companies you're interviewing with, and the status of each interview round—all in one place.
 
-## Tech Stack
-- Backend: Spring Boot 4.0.7 + Java 17
-- Database: MySQL 8
-- Frontend: HTML + Vanilla JS
-- Deploy: Railway
+## 📸 Screenshots
 
-## Features
-- Add and manage job applications
-- Dynamic round tracking per company
-- Auto job status update when round status changes
-- Dashboard with filters and analytics
-- Soft delete with data preservation
-- Delete individual rounds
+*(Replace the placeholders below with actual images of your app)*
 
-## API Endpoints
-- POST /api/jobs — create job
-- GET /api/jobs — get all jobs
-- GET /api/jobs/{id} — get job by id
-- PUT /api/jobs/{id} — update job
-- DELETE /api/jobs/{id} — soft delete
-- POST /api/jobs/{jobId}/rounds — add round
-- GET /api/jobs/{jobId}/rounds — get rounds
-- PATCH /api/jobs/{jobId}/rounds/{id}/status — update round status
+| Dashboard View | Application Details |
+| :---: | :---: |
+| <img src="https://via.placeholder.com/600x400?text=Dashboard+Screenshot" alt="Dashboard" width="400"/> | <img src="https://via.placeholder.com/600x400?text=App+Details+Screenshot" alt="Application Details" width="400"/> |
 
-## Run Locally
-1. Create MySQL database: `CREATE DATABASE jobpulse_db;`
-2. Update `application.properties` with your MySQL credentials
-3. Run `JobpulseApplication.java`
-4. Open `http://localhost:8080`
+## 🚀 Tech Stack
+
+- **Backend:** Java 17, Spring Boot (Web MVC, Data JPA)
+- **Database:** MySQL
+- **Frontend:** HTML, Vanilla JavaScript, CSS (Served directly from Spring Boot)
+- **Build Tool:** Maven
+
+## ⚙️ Local Setup
+
+Running this project locally is very simple.
+
+### Prerequisites
+- Java 17 installed
+- MySQL running on port 3306
+
+### Steps to Run
+
+1. **Create the Database**  
+   Open your MySQL terminal or workbench and run:
+   ```sql
+   CREATE DATABASE jobpulse_db;
+   ```
+
+2. **Clone the Repository**
+   ```bash
+   git clone https://github.com/akshayst369/jobpulse.git
+   cd jobpulse
+   ```
+
+3. **Run the Application**  
+   Since `ddl-auto=update` is enabled, Spring Boot will automatically create the required database tables for you.
+   ```bash
+   ./mvnw spring-boot:run
+   ```
+   *(If you have maven installed globally, you can also use `mvn spring-boot:run`)*
+
+4. **Access the App**  
+   Open your browser and navigate to:  
+   `http://localhost:8080`
+
+## 📂 Key Features
+
+- **Job Application Tracking:** Add, view, and update job applications (Company, Role, Status, Priority).
+- **Interview Round Management:** Track individual interview rounds (HR, Technical, Managerial) tied to specific applications.
+- **RESTful API:** Cleanly separated endpoints to manage both Jobs and Rounds.
+- **Pagination:** Handles large amounts of data seamlessly with paginated API responses.
+
+## 🤝 Contributing
+Contributions, issues, and feature requests are welcome!
+
+---
+*Built with ❤️ for a better job hunt.*
